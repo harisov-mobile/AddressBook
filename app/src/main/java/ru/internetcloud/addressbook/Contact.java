@@ -1,15 +1,15 @@
 package ru.internetcloud.addressbook;
 
-import java.util.UUID;
-
 public class Contact {
 
-    private UUID uuid;
+    // private UUID uuid; - попробую обойтись без uuid
+    private long _id;
     private String name;
     private String phone;
 
-    public Contact() {
-        uuid = UUID.randomUUID();
+    public Contact(long _id) {
+        // uuid = UUID.randomUUID(); - попробую обойтись без uuid
+        this._id = _id;
     }
 
     public String getName() {
@@ -27,4 +27,13 @@ public class Contact {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public long getId() {
+        return _id;
+    }
+
+    public void setId(long _id) {
+        this._id = _id;
+    }
+
 }

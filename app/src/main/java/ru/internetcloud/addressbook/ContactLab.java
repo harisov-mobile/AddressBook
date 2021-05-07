@@ -4,7 +4,10 @@ package ru.internetcloud.addressbook;
 // синглтон
 //**************************************
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,10 @@ import java.util.List;
 public class ContactLab {
 
     private static ContactLab contactLab;
+    private SQLiteDatabase sqLiteDatabase;
+    private Context appContext;
 
+    // статический метод для синглтона
     public static ContactLab getInstance(Context activityContext) {
         if (contactLab == null) {
             contactLab = new ContactLab(activityContext);
@@ -20,24 +26,87 @@ public class ContactLab {
         return contactLab;
     }
 
+    // статический метод - вспомогательный для БД
+    private static ContentValues getContentValues(Contact contact) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseDescription.ContactTable.Cols.NAME, contact.getName());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.PHONE, contact.getPhone());
+
+        return contentValues;
+    }
+
     private ContactLab(Context activityContext) {
         // закрытый конструктор, чтобы никто не смог создать экземпляр в обход getInstance()
-        Context appContext = activityContext.getApplicationContext();
-
+        appContext = activityContext.getApplicationContext();
 
         // создать БД:
-
+        sqLiteDatabase = new AddressBookDatabaseHelper(appContext).getWritableDatabase();
     }
 
     public List<Contact> getContactList() {
         List<Contact> contactList = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
-            Contact contact = new Contact();
-            contact.setName("#" + i);
-            contactList.add(contact);
+        ContactCursorWrapper contactCursorWrapper = queryContacts(null, null); // получаем все записи
+
+        try {
+            contactCursorWrapper.moveToFirst();
+            while (!contactCursorWrapper.isAfterLast()) {
+                contactList.add(contactCursorWrapper.getContact());
+                contactCursorWrapper.moveToNext();
+            }
+        } finally {
+            contactCursorWrapper.close();
         }
 
+//        for (int i = 0; i < 10; i++) {
+//            Contact contact = new Contact();
+//            contact.setName("#" + i);
+//            contactList.add(contact);
+//        }
+
         return contactList;
+    }
+
+    public void addContact(Contact contact) {
+        ContentValues contentValues = getContentValues(contact);
+        sqLiteDatabase.insert(DatabaseDescription.ContactTable.TABLE_NAME, null, contentValues);
+    }
+
+    public void updateContact(Contact contact) {
+        ContentValues contentValues = getContentValues(contact);
+        String idString = "" + contact.getId();
+        sqLiteDatabase.update(DatabaseDescription.ContactTable.TABLE_NAME, contentValues, DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString});
+    }
+
+    public Contact getContact(long _id) {
+
+        Contact contact = null;
+
+        String idString = "" + _id;
+        ContactCursorWrapper contactCursorWrapper = queryContacts(DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString}); // получаем все записи
+        try {
+            if (contactCursorWrapper.getCount() != 0) {
+                contactCursorWrapper.moveToFirst();
+                contact = contactCursorWrapper.getContact();
+            }
+        } finally {
+            contactCursorWrapper.close();
+        }
+        return contact;
+    }
+
+    private ContactCursorWrapper queryContacts(String whereClause, String[] whereArgs) {
+        Cursor cursor = sqLiteDatabase.query(
+                DatabaseDescription.ContactTable.TABLE_NAME,
+                null, // все столбцы
+                whereClause,
+                whereArgs,
+                null, // group by
+                null, // having
+                DatabaseDescription.ContactTable.Cols.NAME // order by
+                );
+
+        // оборачиваем курсор в обертку
+        return new ContactCursorWrapper(cursor);
     }
 }

@@ -1,11 +1,14 @@
 package ru.internetcloud.addressbook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ContactListFragment extends Fragment {
 
     private RecyclerView contact_list_recycler_view;
+    private FloatingActionButton add_fab;
     private ContactListAdapter contactListAdapter;
 
     public static ContactListFragment newInstance() {
@@ -40,7 +44,15 @@ public class ContactListFragment extends Fragment {
         contact_list_recycler_view = view.findViewById(R.id.contact_list_recycler_view);
         contact_list_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI();
+        add_fab = view.findViewById(R.id.add_fab);
+        add_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // add_edit_activity
+                Intent intent = ContactActivity.newIntent(getActivity(), 0);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -71,7 +83,7 @@ public class ContactListFragment extends Fragment {
     }
 
     // внутренний класс Holder:
-    private class ContactListViewHolder extends RecyclerView.ViewHolder {
+    private class ContactListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Contact contact;
 
@@ -81,12 +93,19 @@ public class ContactListFragment extends Fragment {
             super(itemView);
 
             name_text_view = itemView.findViewById(R.id.name_text_view);
+            itemView.setOnClickListener(this);
         }
 
         private void bind(Contact currentContact) {
             contact = currentContact;
 
             name_text_view.setText(contact.getName());
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = ContactActivity.newIntent(getActivity(), contact.getId());
+            startActivity(intent);
         }
     }
 
