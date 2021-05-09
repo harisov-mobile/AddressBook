@@ -23,12 +23,30 @@
         android:useDefaultMargins="true">
 
         <TextView
-            android:id="@+id/label_name_text_view"
+            android:id="@+id/label_photo_text_view"
             style="@style/label_contact_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_row="0"
+            android:text="@string/label_photo" />
+
+        <ImageView
+            android:id="@+id/contact_image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_column="1"
+            android:layout_gravity="start"
+            android:layout_row="0"
+            app:srcCompat="@drawable/ic_photo_camera_white_24dp" />
+
+        <TextView
+            android:id="@+id/label_name_text_view"
+            style="@style/label_contact_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
             android:text="@string/label_name" />
 
         <TextView
@@ -37,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="0"
+            android:layout_row="1"
             tools:text="name_text_view" />
 
         <TextView
@@ -46,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="1"
+            android:layout_row="2"
             android:text="@string/label_phone" />
 
         <TextView
@@ -55,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="1"
+            android:layout_row="2"
             tools:text="phone_text_view" />
 
         <TextView
@@ -64,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="2"
+            android:layout_row="3"
             android:text="@string/label_email" />
 
         <TextView
@@ -73,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="2"
+            android:layout_row="3"
             tools:text="email_text_view" />
 
         <TextView
@@ -82,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="3"
+            android:layout_row="4"
             android:text="@string/label_street" />
 
         <TextView
@@ -91,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="3"
+            android:layout_row="4"
             tools:text="street_text_view" />
 
         <TextView
@@ -100,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="4"
+            android:layout_row="5"
             android:text="@string/label_city" />
 
         <TextView
@@ -109,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="4"
+            android:layout_row="5"
             tools:text="city_text_view" />
 
         <TextView
@@ -118,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="5"
+            android:layout_row="6"
             android:text="@string/label_state" />
 
         <TextView
@@ -127,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="5"
+            android:layout_row="6"
             tools:text="state_text_view" />
 
         <TextView
@@ -136,7 +154,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
-            android:layout_row="6"
+            android:layout_row="7"
             android:text="@string/label_zip" />
 
         <TextView
@@ -145,7 +163,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_row="6"
+            android:layout_row="7"
             tools:text="zip_text_view" />
 
 

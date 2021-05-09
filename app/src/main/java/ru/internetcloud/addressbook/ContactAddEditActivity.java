@@ -39,7 +39,7 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         } else {
             // контакт успешно добавлен:
             Toast.makeText(this, R.string.contact_added, Toast.LENGTH_SHORT).show();
-            Intent intent = ContactActivity.newIntent(this, contactId);
+            Intent intent = ContactPagerActivity.newIntent(this, contactId);
             startActivity(intent);
             finish();
         }
@@ -54,7 +54,7 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         } else {
             // контакт успешно обновлен:
             Toast.makeText(this, R.string.contact_updated, Toast.LENGTH_SHORT).show();
-            Intent intent = ContactActivity.newIntent(this, contact.getId());
+            Intent intent = ContactPagerActivity.newIntent(this, contact.getId());
             startActivity(intent);
             finish();
         }

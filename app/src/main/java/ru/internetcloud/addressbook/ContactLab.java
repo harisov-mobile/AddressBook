@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class ContactLab {
         contentValues.put(DatabaseDescription.ContactTable.Cols.CITY, contact.getCity());
         contentValues.put(DatabaseDescription.ContactTable.Cols.STATE, contact.getState());
         contentValues.put(DatabaseDescription.ContactTable.Cols.ZIP, contact.getZip());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.UUID, contact.getUuid().toString());
 
         return contentValues;
     }
@@ -62,12 +64,6 @@ public class ContactLab {
         } finally {
             contactCursorWrapper.close();
         }
-
-//        for (int i = 0; i < 10; i++) {
-//            Contact contact = new Contact();
-//            contact.setName("#" + i);
-//            contactList.add(contact);
-//        }
 
         return contactList;
     }
@@ -120,5 +116,10 @@ public class ContactLab {
 
         // оборачиваем курсор в обертку
         return new ContactCursorWrapper(cursor);
+    }
+
+    public File getPhotoFile(Contact contact) {
+        File filesDir = appContext.getFilesDir();
+        return new File(filesDir, contact.getPhotoFilename());
     }
 }

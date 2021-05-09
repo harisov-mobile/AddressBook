@@ -18,6 +18,8 @@
     <string name="label_city">City:</string>
     <string name="label_state">State:</string>
     <string name="label_zip">Zip:</string>
+    <string name="label_photo">Photo:</string>
+
     <string name="save_button">Save</string>
 
     <string name="contact_added">Contact added successfully</string>
@@ -29,7 +31,11 @@
 
     <string name="confirm_title">Are You Sure?</string>
     <string name="confirm_message">This will permanently delete the contact</string>
+
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
+
+    <string name="button_save">Save</string>
+    <string name="button_do_not_save">Don\'t save</string>
 
 </resources>

@@ -24,7 +24,8 @@ public class AddressBookDatabaseHelper extends SQLiteOpenHelper {
                 + DatabaseDescription.ContactTable.Cols.STREET + " TEXT,"
                 + DatabaseDescription.ContactTable.Cols.CITY + " TEXT,"
                 + DatabaseDescription.ContactTable.Cols.STATE + " TEXT,"
-                + DatabaseDescription.ContactTable.Cols.ZIP + " TEXT"
+                + DatabaseDescription.ContactTable.Cols.ZIP + " TEXT,"
+                + DatabaseDescription.ContactTable.Cols.UUID + " TEXT"
                 + ")";
 
         db.execSQL(createCommand);

@@ -25,6 +25,7 @@ public class ContactCursorWrapper extends CursorWrapper {
         contact.setCity(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.CITY)));
         contact.setState(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.STATE)));
         contact.setZip(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.ZIP)));
+        contact.setUuidfromString(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.UUID)));
 
         return contact;
     }

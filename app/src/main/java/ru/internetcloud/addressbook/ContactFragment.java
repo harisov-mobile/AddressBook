@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,8 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -43,6 +49,7 @@ public class ContactFragment extends Fragment {
     private TextView city_text_view;
     private TextView state_text_view;
     private TextView zip_text_view;
+    private ImageView contact_image_view;
 
     public static ContactFragment newInstance(long contactId) {
         ContactFragment contactFragment = new ContactFragment();
@@ -74,6 +81,7 @@ public class ContactFragment extends Fragment {
         city_text_view = view.findViewById(R.id.city_text_view);
         state_text_view = view.findViewById(R.id.state_text_view);
         zip_text_view = view.findViewById(R.id.zip_text_view);
+        contact_image_view = view.findViewById(R.id.contact_image_view);
 
         name_text_view.setText(contact.getName());
         phone_text_view.setText(contact.getPhone());
@@ -82,6 +90,8 @@ public class ContactFragment extends Fragment {
         city_text_view.setText(contact.getCity());
         state_text_view.setText(contact.getState());
         zip_text_view.setText(contact.getZip());
+
+        updatePhotoView();
 
         return view;
     }
@@ -144,4 +154,17 @@ public class ContactFragment extends Fragment {
             }
         }
     }
+
+    private void updatePhotoView() {
+        File contactPhotoFile;
+        contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+        if (contactPhotoFile == null || !contactPhotoFile.exists()) {
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_photo_camera_white_24dp);
+            contact_image_view.setImageDrawable(ic_photo_camera);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());
+            contact_image_view.setImageBitmap(bitmap);
+        }
+    }
+
 }

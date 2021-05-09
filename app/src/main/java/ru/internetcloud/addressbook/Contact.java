@@ -1,8 +1,9 @@
 package ru.internetcloud.addressbook;
 
+import java.util.UUID;
+
 public class Contact {
 
-    // private UUID uuid; - попробую обойтись без uuid
     private long _id;
     private String name;
     private String phone;
@@ -11,9 +12,10 @@ public class Contact {
     private String city;
     private String state;
     private String zip;
+    private UUID uuid; // для сохранения фото-файла
 
     public Contact(long contactId) {
-        // uuid = UUID.randomUUID(); - попробую обойтись без uuid
+        this.uuid = UUID.randomUUID(); // для сохранения фото-файла
         this._id = contactId;
     }
 
@@ -79,5 +81,17 @@ public class Contact {
 
     public void setZip(String zip) {
         this.zip = zip;
+    }
+
+    public String getPhotoFilename() {
+        return "IMG_" + getUuid().toString() + ".jpg";
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuidfromString(String uuidString) {
+        this.uuid = UUID.fromString(uuidString);
     }
 }

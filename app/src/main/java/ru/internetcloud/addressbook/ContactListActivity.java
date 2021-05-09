@@ -34,7 +34,7 @@ public class ContactListActivity extends TemplateFragmentActivity
         if (view == null) {
             // это телефон:
             // открыть на просмотр существующий контакт:
-            Intent intent = ContactActivity.newIntent(this, contactId);
+            Intent intent = ContactPagerActivity.newIntent(this, contactId);
             startActivity(intent);
         } else {
             // это планшет:
