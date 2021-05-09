@@ -11,7 +11,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ContactPagerActivity"></activity>
         <activity android:name=".ContactAddEditActivity" />
-        <activity android:name=".ContactActivity" />
         <activity android:name=".ContactListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
