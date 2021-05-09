@@ -67,21 +67,12 @@ public class ContactListActivity extends TemplateFragmentActivity
 
     @Override
     public void onEditContact(long contactId) {
-        View view = findViewById(R.id.fragment_detail_container);
-
-        if (view == null) {
-            // это телефон:
-            // открыть на редактирование существующий контакт:
-            Intent intent = ContactAddEditActivity.newIntent(this, contactId);
-            startActivity(intent);
-        } else {
-            // это планшет:
-            ContactAddEditFragment contactAddEditFragment = ContactAddEditFragment.newInstance(contactId);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_detail_container, contactAddEditFragment)
-                    .commit();
-        }
+        // это планшет:
+        ContactAddEditFragment contactAddEditFragment = ContactAddEditFragment.newInstance(contactId);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_detail_container, contactAddEditFragment)
+                .commit();
     }
 
     @Override

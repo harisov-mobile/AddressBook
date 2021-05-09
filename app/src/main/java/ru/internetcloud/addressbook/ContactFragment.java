@@ -1,5 +1,6 @@
 package ru.internetcloud.addressbook;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,17 +13,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 public class ContactFragment extends Fragment {
 
@@ -34,6 +31,8 @@ public class ContactFragment extends Fragment {
     Callbacks hostActivity;
 
     public static final String ARG_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
+    private static final String TAG_CONFIRM_DELETE = "Confirm_delete";
+    private static final int REQUEST_CONFIRM_DELETE = 0;
 
     private Contact contact;
 
@@ -112,53 +111,12 @@ public class ContactFragment extends Fragment {
     }
 
     public void deleteContact() {
-
-        hostActivity.onDeleteContact(contact.getId());
-
-//        int result = ContactLab.getInstance(getActivity()).deleteContact(contact);
-//
-//        if (result == 0) {
-//            Toast.makeText(getActivity(), R.string.contact_not_deleted, Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(getActivity(), R.string.contact_deleted, Toast.LENGTH_SHORT).show();
-//        }
-
-        //confirmDelete.show(getFragmentManager(), "rustam");
+        // задаем вопрос пользователю: действительно он хочет удалить контакт?
+        FragmentManager fragmentManager = getFragmentManager();
+        ConfirmDeleteFragment confirmDeleteFragment = new ConfirmDeleteFragment();
+        confirmDeleteFragment.setTargetFragment(ContactFragment.this, REQUEST_CONFIRM_DELETE); // Назначение целевого фрагмента
+        confirmDeleteFragment.show(fragmentManager, TAG_CONFIRM_DELETE);
     }
-
-    public final DialogFragment confirmDelete = new DialogFragment() {
-        // create an AlertDialog and return it
-        @Override
-        public Dialog onCreateDialog(Bundle bundle) {
-            // create a new AlertDialog Builder
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            builder.setTitle(R.string.confirm_title);
-            builder.setMessage(R.string.confirm_message);
-
-            // provide an OK button that simply dismisses the dialog
-            builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int button) {
-
-                            int result = ContactLab.getInstance(getActivity()).deleteContact(contact.getId());
-
-                            if (result == 0) {
-                                Toast.makeText(getActivity(), R.string.contact_not_deleted, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getActivity(), R.string.contact_deleted, Toast.LENGTH_SHORT).show();
-                            }
-
-                            //hostActivity.onDeleteContact
-                            //listener.onContactDeleted(); // notify listener
-                        }
-                    }
-            );
-
-            builder.setNegativeButton(R.string.button_cancel, null);
-            return builder.create(); // return the AlertDialog
-        }
-    };
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -170,5 +128,20 @@ public class ContactFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         hostActivity = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // этот метод будет вызван из диалогового фрагмента, который передаст интент с информацией, что выбрал пользователь: удаление или нет.
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CONFIRM_DELETE) {
+            boolean isDeleted = data.getBooleanExtra(ConfirmDeleteFragment.KEY_CONFIRM_DELETE, false);
+            if (isDeleted) {
+                hostActivity.onDeleteContact(contact.getId());
+            }
+        }
     }
 }
