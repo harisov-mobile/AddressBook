@@ -31,6 +31,11 @@ public class ContactLab {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseDescription.ContactTable.Cols.NAME, contact.getName());
         contentValues.put(DatabaseDescription.ContactTable.Cols.PHONE, contact.getPhone());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.EMAIL, contact.getEmail());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.STREET, contact.getStreet());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.CITY, contact.getCity());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.STATE, contact.getState());
+        contentValues.put(DatabaseDescription.ContactTable.Cols.ZIP, contact.getZip());
 
         return contentValues;
     }
@@ -67,23 +72,30 @@ public class ContactLab {
         return contactList;
     }
 
-    public void addContact(Contact contact) {
+    public long addContact(Contact contact) {
+        // @return the row ID of the newly inserted row, or -1 if an error occurred
         ContentValues contentValues = getContentValues(contact);
-        sqLiteDatabase.insert(DatabaseDescription.ContactTable.TABLE_NAME, null, contentValues);
+        return sqLiteDatabase.insert(DatabaseDescription.ContactTable.TABLE_NAME, null, contentValues);
     }
 
-    public void updateContact(Contact contact) {
+    public int updateContact(Contact contact) {
+        // @return the number of rows affected
         ContentValues contentValues = getContentValues(contact);
         String idString = "" + contact.getId();
-        sqLiteDatabase.update(DatabaseDescription.ContactTable.TABLE_NAME, contentValues, DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString});
+        return sqLiteDatabase.update(DatabaseDescription.ContactTable.TABLE_NAME, contentValues, DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString});
     }
 
-    public Contact getContact(long _id) {
+    public int deleteContact(long contactId) {
+        String idString = "" + contactId;
+        return sqLiteDatabase.delete(DatabaseDescription.ContactTable.TABLE_NAME, DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString});
+    }
+
+    public Contact getContact(long contactId) {
 
         Contact contact = null;
 
-        String idString = "" + _id;
-        ContactCursorWrapper contactCursorWrapper = queryContacts(DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString}); // получаем все записи
+        String idString = "" + contactId;
+        ContactCursorWrapper contactCursorWrapper = queryContacts(DatabaseDescription.ContactTable.Cols._ID + " = ?", new String[] {idString}); // получаем одну запись
         try {
             if (contactCursorWrapper.getCount() != 0) {
                 contactCursorWrapper.moveToFirst();

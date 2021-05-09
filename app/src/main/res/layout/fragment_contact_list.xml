@@ -9,19 +9,20 @@
         android:id="@+id/contact_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"></androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="40dp"
         android:clickable="true"
         android:focusable="true"
-        app:fabSize="auto"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 
 </FrameLayout>

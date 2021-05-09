@@ -1,5 +1,6 @@
 package ru.internetcloud.addressbook;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ContactListFragment extends Fragment {
 
+    public interface Callbacks {
+        public void onSelectContact(long contactId);
+        public void onAddContact();
+    }
+
+    private Callbacks hostActivity;
+
     private RecyclerView contact_list_recycler_view;
     private FloatingActionButton add_fab;
     private ContactListAdapter contactListAdapter;
@@ -31,8 +39,6 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Nullable
@@ -48,9 +54,7 @@ public class ContactListFragment extends Fragment {
         add_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // add_edit_activity
-                Intent intent = ContactActivity.newIntent(getActivity(), 0);
-                startActivity(intent);
+                hostActivity.onAddContact();
             }
         });
 
@@ -64,22 +68,37 @@ public class ContactListFragment extends Fragment {
         updateUI();
     }
 
-    private void updateUI() {
+    public void updateUI() {
 
         List<Contact> contactList = ContactLab.getInstance(getActivity()).getContactList();
 
         if (contactListAdapter == null) {
             contactListAdapter = new ContactListAdapter(contactList);
             contact_list_recycler_view.setAdapter(contactListAdapter);
+            // Присоединение ItemDecorator для вывода разделителей
+            contact_list_recycler_view.addItemDecoration(new ItemDivider(getContext()));
+
+            // Улучшает быстродействие, если размер макета RecyclerView не изменяется
+            contact_list_recycler_view.setHasFixedSize(true);
         } else {
             // если не обновлять contactList, то будут показаны устаревшие данные,
             // поэтому приходится делать:
             contactListAdapter.setContactList(contactList); // ???
-
             contactListAdapter.notifyDataSetChanged();
         }
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
+        hostActivity = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hostActivity = null;
     }
 
     // внутренний класс Holder:
@@ -104,8 +123,7 @@ public class ContactListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ContactActivity.newIntent(getActivity(), contact.getId());
-            startActivity(intent);
+            hostActivity.onSelectContact(contact.getId());
         }
     }
 

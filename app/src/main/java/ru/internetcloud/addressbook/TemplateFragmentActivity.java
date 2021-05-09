@@ -14,10 +14,14 @@ public abstract class TemplateFragmentActivity extends AppCompatActivity {
     // протектед - чтобы только наследники
     protected abstract Fragment createFragment(); // каждый класс, который унаследуется от данного класса, будет "использовать" свой фрагмент
 
+    protected int getLayoutResId() {
+        return R.layout.activity_fragment; // для планшета будет переопределен
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
+        setContentView(getLayoutResId());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);

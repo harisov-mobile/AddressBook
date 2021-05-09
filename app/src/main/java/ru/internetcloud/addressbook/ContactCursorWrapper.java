@@ -20,6 +20,11 @@ public class ContactCursorWrapper extends CursorWrapper {
         Contact contact = new Contact(_id);
         contact.setName(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.NAME)));
         contact.setPhone(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.PHONE)));
+        contact.setEmail(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.EMAIL)));
+        contact.setStreet(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.STREET)));
+        contact.setCity(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.CITY)));
+        contact.setState(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.STATE)));
+        contact.setZip(getString(getColumnIndex(DatabaseDescription.ContactTable.Cols.ZIP)));
 
         return contact;
     }

@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class ContactActivity extends TemplateFragmentActivity {
+public class ContactActivity extends TemplateFragmentActivity
+    implements ContactFragment.Callbacks {
 
     private static final String KEY_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
 
@@ -26,5 +28,24 @@ public class ContactActivity extends TemplateFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onEditContact(long contactId) {
+        // открыть на редактирование существующий контакт, но закрыть саму себя:
+        Intent intent = ContactAddEditActivity.newIntent(this, contactId);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onDeleteContact(long contactId) {
+        int result = ContactLab.getInstance(this).deleteContact(contactId);
+        if (result == 0) {
+            Toast.makeText(this, R.string.contact_not_deleted, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.contact_deleted, Toast.LENGTH_SHORT).show();
+        }
+        finish();
     }
 }
