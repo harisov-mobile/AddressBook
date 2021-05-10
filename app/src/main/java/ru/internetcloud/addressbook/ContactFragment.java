@@ -39,6 +39,7 @@ public class ContactFragment extends Fragment {
     public static final String ARG_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
     private static final String TAG_CONFIRM_DELETE = "Confirm_delete";
     private static final int REQUEST_CONFIRM_DELETE = 0;
+    private static final String DIALOG_INCREASED_IMAGE = "IncreasedImage";
 
     private Contact contact;
 
@@ -90,6 +91,16 @@ public class ContactFragment extends Fragment {
         city_text_view.setText(contact.getCity());
         state_text_view.setText(contact.getState());
         zip_text_view.setText(contact.getZip());
+
+        contact_image_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // показать увеличенную фотографию:
+                FragmentManager fragmentManager = getFragmentManager();
+                IncreasedImageFragment increasedImageFragment = new IncreasedImageFragment();
+                increasedImageFragment.show(fragmentManager, DIALOG_INCREASED_IMAGE);
+            }
+        });
 
         updatePhotoView();
 
@@ -166,5 +177,4 @@ public class ContactFragment extends Fragment {
             contact_image_view.setImageBitmap(bitmap);
         }
     }
-
 }
