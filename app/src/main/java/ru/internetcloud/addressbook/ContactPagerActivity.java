@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -32,6 +33,11 @@ public class ContactPagerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_pager);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        if (!isTablet) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         long contactId = getIntent().getLongExtra(KEY_CONTACT_ID, 0);
 

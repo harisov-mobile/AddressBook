@@ -1,6 +1,7 @@
 package ru.internetcloud.addressbook;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -24,6 +25,11 @@ public class ContactListActivity extends TemplateFragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        if (!isTablet) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     @Override

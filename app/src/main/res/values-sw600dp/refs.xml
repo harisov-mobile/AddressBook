@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="activity_list_detail" type="layout">@layout/activity_two_pane</item>
-    <bool name="isTablet">true</bool>
+    <bool name="is_tablet">true</bool>
 </resources>

@@ -2,6 +2,7 @@ package ru.internetcloud.addressbook;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -28,6 +29,11 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        if (!isTablet) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     @Override
