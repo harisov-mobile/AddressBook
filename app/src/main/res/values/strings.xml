@@ -38,4 +38,9 @@
     <string name="button_save">Save</string>
     <string name="button_do_not_save">Don\'t save</string>
 
+    <string name="button_pick_image">Pick image</string>
+    <string name="button_take_photo">Take photo</string>
+    <string name="button_remove_photo">Remove photo</string>
+    <string name="add_edit_icon_description">Photo of person</string>
+
 </resources>

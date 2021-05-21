@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +18,27 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-public class ContactAddEditFragment extends Fragment {
+// смотри https://github.com/stfalcon-studio/ContentManager
+import com.stfalcon.contentmanager.ContentManager;
+
+import static java.nio.file.Files.*;
+
+public class ContactAddEditFragment extends Fragment implements ContentManager.PickContentListener {
 
     public interface Callbacks {
         public void onNewContactSaved(Contact contact);
@@ -40,10 +48,13 @@ public class ContactAddEditFragment extends Fragment {
     private Callbacks hostActivity;
 
     private static final String ARG_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
+    private static final String TAG = "rustam";
 
     private static final String TAG_CONFIRM_SAVE = "Confirm_save";
     private static final int REQUEST_CONFIRM_SAVE = 1;
     private static final int REQUEST_PHOTO = 2;
+    private static final int CONTENT_PICKER = 15; // выбираем изображение через вспомогательную библиотеку ContentManager
+    private static final int CONTENT_TAKE = 16;   // запускаем камеру, чтобы снять фото через вспомогательную библиотеку ContentManager - не использую!
 
     private Contact contact;
 
@@ -55,11 +66,17 @@ public class ContactAddEditFragment extends Fragment {
     private TextInputEditText state_text_input_edit_text;
     private TextInputEditText zip_text_input_edit_text;
 
-    private Button save_button;
     private FloatingActionButton save_fab;
+
+    private ImageButton pick_photo_image_button;
+    private ImageButton take_photo_image_button;
+    private ImageButton remove_photo_image_button;
 
     private ImageView contact_image_view;
     private File contactPhotoFile;
+    private File tempPhotoFile;
+
+    private ContentManager contentManager;
 
     public static ContactAddEditFragment newInstance(long contactId) {
         ContactAddEditFragment addEditFragment = new ContactAddEditFragment();
@@ -73,6 +90,9 @@ public class ContactAddEditFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Create instance of ContentManager
+        contentManager = new ContentManager(getActivity(), this, this);
+
         long contactId = getArguments().getLong(ARG_CONTACT_ID, 0);
         if (contactId > 0) {
             contact = ContactLab.getInstance(getActivity()).getContact(contactId);
@@ -81,6 +101,15 @@ public class ContactAddEditFragment extends Fragment {
         }
 
         contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+        tempPhotoFile = ContactLab.getInstance(getActivity()).getTempPhotoFile();
+        if (contactPhotoFile != null && contactPhotoFile.exists()) {
+            try {
+                FileLab.copy(contactPhotoFile, tempPhotoFile);
+            } catch (Exception ex) {
+                String msg = "Photo was not loaded from  due to an error : " + ex.getMessage();
+                Log.i(TAG, msg);
+            }
+        }
     }
 
     @Nullable
@@ -113,44 +142,70 @@ public class ContactAddEditFragment extends Fragment {
             state_text_input_edit_text.setText(contact.getState());
             zip_text_input_edit_text.setText(contact.getZip());
         }
-
-        // обращение к фотокамере, чтобы сделать фото контакта:
         contact_image_view = view.findViewById(R.id.contact_image_view);
-        updatePhotoView();
+        updatePhotoView(); // отображение фото контакта или иконки-фотоаппарата
 
         PackageManager packageManager = getActivity().getPackageManager();
 
-        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        final Intent captureImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        boolean canTakePhoto = contactPhotoFile != null && captureImage.resolveActivity(packageManager) != null;
-
-        contact_image_view.setEnabled(canTakePhoto); // заблокировать фото-кнопку, если на телефоне нет камеры или нет места куда сохранять фото-файл.
+        boolean canTakePhoto = tempPhotoFile != null && captureImageIntent.resolveActivity(packageManager) != null;
 
         contact_image_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPhotoFromCamera();
-                Uri uri = FileProvider.getUriForFile(getActivity(), "ru.internetcloud.addressbook.fileprovider", contactPhotoFile);
+                // обращение к фотокамере, чтобы сделать фото контакта:
+                getPhotoFromCamera(captureImageIntent);
+            }
+        });
 
-                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        pick_photo_image_button = view.findViewById(R.id.pick_photo_image_button);
+        pick_photo_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentManager.pickContent(ContentManager.Content.IMAGE);
+            }
+        });
 
-                // список приложений(активити), которые могут снимок сделать:
-                List<ResolveInfo> cameraActivities = getActivity()
-                        .getPackageManager()
-                        .queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
-
-                for (ResolveInfo activity : cameraActivities) {
-                    getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                }
-
-                startActivityForResult(captureImage, REQUEST_PHOTO);
+        take_photo_image_button = view.findViewById(R.id.take_photo_image_button);
+        take_photo_image_button.setEnabled(canTakePhoto); // заблокировать фото-кнопку, если на телефоне нет камеры или нет места куда сохранять фото-файл.
+        take_photo_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // обращение к фотокамере, чтобы сделать фото контакта:
+                getPhotoFromCamera(captureImageIntent);
+            }
+        });
+        remove_photo_image_button = view.findViewById(R.id.remove_photo_image_button);
+        remove_photo_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removePhoto();
             }
         });
 
         return view;
     }
 
-    public void getPhotoFromCamera() {
+    public void getPhotoFromCamera(Intent captureImageIntent) {
+        // обращение к фотокамере, чтобы сделать фото контакта:
+
+        Uri uri = FileProvider.getUriForFile(getActivity(), "ru.internetcloud.addressbook.fileprovider", tempPhotoFile);
+
+        // примечание: authority - хранилище, "ru.internetcloud.addressbook.fileprovider" - указан в манифесте при описании FileProvider
+
+        captureImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+        // список приложений(активити), которые могут снимок сделать:
+        List<ResolveInfo> cameraActivities = getActivity()
+                .getPackageManager()
+                .queryIntentActivities(captureImageIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        for (ResolveInfo activity : cameraActivities) {
+            getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        }
+
+        startActivityForResult(captureImageIntent, REQUEST_PHOTO);
 
     }
 
@@ -212,12 +267,16 @@ public class ContactAddEditFragment extends Fragment {
             if (isSaved) {
                 saveChanges();
             }
-        } else if (requestCode == REQUEST_PHOTO) {
-            Uri uri = FileProvider.getUriForFile(getActivity(), "ru.internetcloud.addressbook.fileprovider", contactPhotoFile);
+        } else if (requestCode == REQUEST_PHOTO ) {
+            Uri uri = FileProvider.getUriForFile(getActivity(), "ru.internetcloud.addressbook.fileprovider", tempPhotoFile);
 
             getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
             updatePhotoView();
+        } else if (requestCode == CONTENT_TAKE) {
+            contentManager.onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode == CONTENT_PICKER) {
+            contentManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -227,6 +286,7 @@ public class ContactAddEditFragment extends Fragment {
             Toast.makeText(getActivity(), "Error! Fill Name, please", Toast.LENGTH_SHORT).show();
         } else {
             fillContact();
+            savePhoto();
             if (contact.getId() == 0) {
                 hostActivity.onNewContactSaved(contact);
             } else {
@@ -236,12 +296,88 @@ public class ContactAddEditFragment extends Fragment {
     }
 
     private void updatePhotoView() {
-        if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_photo_camera_white_24dp);
+//        if (contactPhotoFile == null || !contactPhotoFile.exists()) {
+//            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp); // заготовленная "иконка-фотоаппарат"
+//            contact_image_view.setImageDrawable(ic_photo_camera);
+//        } else {
+//            Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());
+//            contact_image_view.setImageBitmap(bitmap);
+//        }
+        if (tempPhotoFile == null || !tempPhotoFile.exists()) {
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp); // заготовленная "иконка-фотоаппарат"
             contact_image_view.setImageDrawable(ic_photo_camera);
         } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = PictureUtils.getScaledBitmap(tempPhotoFile.getPath(), getActivity());
             contact_image_view.setImageBitmap(bitmap);
         }
+    }
+
+    public void onContentLoaded(Uri uri, String contentType) {
+//            progressBar.setVisibility(View.GONE);
+//            if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
+//                //You can use any library for display image Fresco, Picasso, ImageLoader
+//                //For sample:
+//                ImageLoader.getInstance().displayImage(uri.toString(), ivPicture);
+//                tvUri.setVisibility(View.GONE);
+//                ivPicture.setVisibility(View.VISIBLE);
+//            } else if (contentType.equals(ContentManager.Content.FILE.toString())) {
+//                //Show file path in textView
+//                tvUri.setText(getString(R.string.tap_to_open, uri.toString()));
+//                filePath = uri.toString();
+//                tvUri.setVisibility(View.VISIBLE);
+//                ivPicture.setVisibility(View.GONE);
+//            }
+
+            if (contentType.equals(ContentManager.Content.IMAGE.toString())) {
+                //You can use any library for display image Fresco, Picasso, ImageLoader
+                File from = new File(uri.getPath()); // создаю файл с пути URI
+                try {
+                    FileLab.copy(from, tempPhotoFile);
+                    updatePhotoView();
+                } catch (Exception ex) {
+                    String msg = "Image was not picked due to an error : " + ex.getMessage();
+                    Log.i(TAG, msg);
+                }
+            }
+        Log.i(TAG, "onContentLoaded");
+    }
+
+    @Override
+    public void onStartContentLoading() {
+        Log.i(TAG, "onStartContentLoading");
+    }
+
+    @Override
+    public void onError(String error) {
+        Log.i(TAG, "onError");
+    }
+
+    @Override
+    public void onCanceled() {
+        Log.i(TAG, "onCanceled");
+    }
+
+    private void removePhoto() {
+        if (tempPhotoFile != null && tempPhotoFile.exists()) {
+            tempPhotoFile.delete();
+        }
+        updatePhotoView();
+    }
+
+    private void savePhoto() {
+        if (tempPhotoFile != null && tempPhotoFile.exists()) {
+            try {
+                FileLab.copy(tempPhotoFile, contactPhotoFile);
+            } catch (Exception ex) {
+                String msg = "Photo was not saved due to an error : " + ex.getMessage();
+                Log.i(TAG, msg);
+            }
+        } else {
+            if (contactPhotoFile != null && contactPhotoFile.exists()) {
+                // значит было удаление фото:
+                contactPhotoFile.delete();
+            }
+        }
+
     }
 }

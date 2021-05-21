@@ -2,15 +2,19 @@ package ru.internetcloud.addressbook;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -29,6 +33,7 @@ public class ContactListFragment extends Fragment {
     private Callbacks hostActivity;
 
     private RecyclerView contact_list_recycler_view;
+
     private FloatingActionButton add_fab;
     private ContactListAdapter contactListAdapter;
 
@@ -107,11 +112,14 @@ public class ContactListFragment extends Fragment {
         private Contact contact;
 
         private TextView name_text_view;
+        private ImageView icon_image_view;
 
         public ContactListViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name_text_view = itemView.findViewById(R.id.name_text_view);
+            icon_image_view = itemView.findViewById(R.id.icon_image_view);
+
             itemView.setOnClickListener(this);
         }
 
@@ -119,6 +127,15 @@ public class ContactListFragment extends Fragment {
             contact = currentContact;
 
             name_text_view.setText(contact.getName());
+
+            File contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+            if (contactPhotoFile == null || !contactPhotoFile.exists()) {
+                Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
+                icon_image_view.setImageDrawable(ic_photo_camera);
+            } else {
+                Bitmap bitmap = PictureUtils.getScaledBitmapForIcon(contactPhotoFile.getPath(), getActivity(), (int) getResources().getDimension(R.dimen.list_icon_width), (int) getResources().getDimension(R.dimen.list_icon_height));
+                icon_image_view.setImageBitmap(bitmap);
+            }
         }
 
         @Override

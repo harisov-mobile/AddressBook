@@ -116,11 +116,52 @@
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
-                android:id="@+id/contact_image_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:srcCompat="@drawable/ic_photo_camera_white_24dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/pick_photo_image_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/button_pick_image"
+                        app:srcCompat="@drawable/ic_image_white_24dp" />
+
+                    <ImageButton
+                        android:id="@+id/take_photo_image_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/button_take_photo"
+                        app:srcCompat="@drawable/ic_photo_camera_white_24dp" />
+
+                    <ImageButton
+                        android:id="@+id/remove_photo_image_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/button_remove_photo"
+                        app:srcCompat="@drawable/ic_backspace_white_24dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/contact_image_view"
+                    android:layout_width="@dimen/add_edit_icon_width"
+                    android:layout_height="@dimen/add_edit_icon_height"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/add_edit_icon_description"
+                    app:srcCompat="@drawable/ic_person_outline_white_24dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

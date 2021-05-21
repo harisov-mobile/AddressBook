@@ -167,10 +167,9 @@ public class ContactFragment extends Fragment {
     }
 
     private void updatePhotoView() {
-        File contactPhotoFile;
-        contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+        File contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
         if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_photo_camera_white_24dp);
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
             contact_image_view.setImageDrawable(ic_photo_camera);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());

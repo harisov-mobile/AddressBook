@@ -2,12 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/icon_image_view"
+        android:layout_width="@dimen/list_icon_width"
+        android:layout_height="@dimen/list_icon_height" />
 
     <TextView
         android:id="@+id/name_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/small_margin"
+        android:gravity="center_vertical"
+        tools:text="name" />
 </LinearLayout>

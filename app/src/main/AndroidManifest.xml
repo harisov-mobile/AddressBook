@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.internetcloud.addressbook">
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false"
         />
 
@@ -35,3 +38,5 @@
     </application>
 
 </manifest>
+
+<!--    Указание на внешний файл "files.xml", в котором доп.информация хранится:   android:resource="@xml/files"-->

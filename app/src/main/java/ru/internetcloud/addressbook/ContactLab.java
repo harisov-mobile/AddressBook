@@ -15,6 +15,8 @@ import java.util.List;
 
 public class ContactLab {
 
+    private static final String TEMP_IMAGE_FILE_NAME = "temp_image.jpg";
+
     private static ContactLab contactLab;
     private SQLiteDatabase sqLiteDatabase;
     private Context appContext;
@@ -121,5 +123,14 @@ public class ContactLab {
     public File getPhotoFile(Contact contact) {
         File filesDir = appContext.getFilesDir();
         return new File(filesDir, contact.getPhotoFilename());
+    }
+
+    public File getTempPhotoFile() {
+        File filesDir = appContext.getFilesDir();
+        File tempFile = new File(filesDir, TEMP_IMAGE_FILE_NAME);
+        if (tempFile.exists()) {
+            tempFile.delete(); // tempFile всегда будет пустой
+        }
+        return tempFile;
     }
 }
