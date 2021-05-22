@@ -40,7 +40,7 @@ public class IncreasedImageFragment extends DialogFragment {
         ImageView increased_image_view = view.findViewById(R.id.increased_image_view);
 
         if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_white_24dp);
             increased_image_view.setImageDrawable(ic_photo_camera);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());

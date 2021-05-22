@@ -174,7 +174,7 @@ public class ContactFragment extends Fragment {
     private void updatePhotoView() {
 
         if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_white_24dp);
             contact_image_view.setImageDrawable(ic_photo_camera);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());

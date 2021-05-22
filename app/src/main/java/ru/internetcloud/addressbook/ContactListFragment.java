@@ -130,7 +130,7 @@ public class ContactListFragment extends Fragment {
 
             File contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
             if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-                Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
+                Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_white_24dp);
                 icon_image_view.setImageDrawable(ic_photo_camera);
             } else {
                 Bitmap bitmap = PictureUtils.getScaledBitmapForIcon(contactPhotoFile.getPath(), getActivity(), (int) getResources().getDimension(R.dimen.list_icon_width), (int) getResources().getDimension(R.dimen.list_icon_height));

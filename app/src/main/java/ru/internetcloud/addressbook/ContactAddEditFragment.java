@@ -303,14 +303,14 @@ public class ContactAddEditFragment extends Fragment implements ContentManager.P
 
     private void updatePhotoView() {
 //        if (contactPhotoFile == null || !contactPhotoFile.exists()) {
-//            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp); // заготовленная "иконка-фотоаппарат"
+//            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_white_24dp); // заготовленная "иконка-фотоаппарат"
 //            contact_image_view.setImageDrawable(ic_photo_camera);
 //        } else {
 //            Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());
 //            contact_image_view.setImageBitmap(bitmap);
 //        }
         if (tempPhotoFile == null || !tempPhotoFile.exists()) {
-            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp); // заготовленная "иконка-фотоаппарат"
+            Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_white_24dp); // заготовленная "иконка-фотоаппарат"
             contact_image_view.setImageDrawable(ic_photo_camera);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(tempPhotoFile.getPath(), getActivity());
