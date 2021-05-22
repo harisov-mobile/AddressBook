@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 // смотри https://github.com/stfalcon-studio/ContentManager
 import com.stfalcon.contentmanager.ContentManager;
@@ -55,6 +56,7 @@ public class ContactAddEditFragment extends Fragment implements ContentManager.P
     private static final int REQUEST_PHOTO = 2;
     private static final int CONTENT_PICKER = 15; // выбираем изображение через вспомогательную библиотеку ContentManager
     private static final int CONTENT_TAKE = 16;   // запускаем камеру, чтобы снять фото через вспомогательную библиотеку ContentManager - не использую!
+    private static final String DIALOG_INCREASED_IMAGE = "IncreasedImage";
 
     private Contact contact;
 
@@ -154,8 +156,12 @@ public class ContactAddEditFragment extends Fragment implements ContentManager.P
         contact_image_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // обращение к фотокамере, чтобы сделать фото контакта:
-                getPhotoFromCamera(captureImageIntent);
+                // показать увеличенную фотографию:
+                if (tempPhotoFile != null && tempPhotoFile.exists()) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    IncreasedImageFragment increasedImageFragment = IncreasedImageFragment.newInstance(contactPhotoFile);
+                    increasedImageFragment.show(fragmentManager, DIALOG_INCREASED_IMAGE);
+                }
             }
         });
 

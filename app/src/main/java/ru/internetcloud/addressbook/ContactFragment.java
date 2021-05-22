@@ -52,6 +52,8 @@ public class ContactFragment extends Fragment {
     private TextView zip_text_view;
     private ImageView contact_image_view;
 
+    private File contactPhotoFile;
+
     public static ContactFragment newInstance(long contactId) {
         ContactFragment contactFragment = new ContactFragment();
         Bundle bundle = new Bundle();
@@ -68,6 +70,7 @@ public class ContactFragment extends Fragment {
 
         long contactId = getArguments().getLong(ARG_CONTACT_ID, 0);
         contact = ContactLab.getInstance(getActivity()).getContact(contactId);
+        contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
     }
 
     @Nullable
@@ -96,9 +99,11 @@ public class ContactFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // показать увеличенную фотографию:
-                FragmentManager fragmentManager = getFragmentManager();
-                IncreasedImageFragment increasedImageFragment = new IncreasedImageFragment();
-                increasedImageFragment.show(fragmentManager, DIALOG_INCREASED_IMAGE);
+                if (contactPhotoFile != null && contactPhotoFile.exists()) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    IncreasedImageFragment increasedImageFragment = IncreasedImageFragment.newInstance(contactPhotoFile);
+                    increasedImageFragment.show(fragmentManager, DIALOG_INCREASED_IMAGE);
+                }
             }
         });
 
@@ -167,7 +172,7 @@ public class ContactFragment extends Fragment {
     }
 
     private void updatePhotoView() {
-        File contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+
         if (contactPhotoFile == null || !contactPhotoFile.exists()) {
             Drawable ic_photo_camera = getResources().getDrawable(R.drawable.ic_person_outline_white_24dp);
             contact_image_view.setImageDrawable(ic_photo_camera);
