@@ -8,21 +8,25 @@
 ![alt text](screenshots/addressbook1.jpg "рис.1 Главный экран.")
 
 рис.1 Главный экран.
+
 ---
 
 ![alt text](screenshots/addressbook2.jpg "рис.2 Просмотр контакта.")
 
 рис.2 Просмотр контакта.
+
 ---
 
 ![alt text](screenshots/addressbook3.jpg "рис.3 Редактирование контакта.")
 
 рис.3 Редактирование контакта.
+
 ---
 
 ![alt text](screenshots/addressbook4.jpg "рис.4 Удаление контакта.")
 
 рис.4 Удаление контакта.
+
 ---
 
 ![alt text](screenshots/addressbook5.jpg "рис.5 Просмотр фото контакта.")
