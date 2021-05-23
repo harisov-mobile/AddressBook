@@ -22,6 +22,10 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         return intent;
     }
 
+    public static long getContactId(Intent data) {
+        return data.getLongExtra(KEY_CONTACT_ID, -1);
+    }
+
     @Override
     protected Fragment createFragment() {
         long contactId = getIntent().getLongExtra(KEY_CONTACT_ID, 0);
@@ -58,9 +62,16 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         } else {
             // контакт успешно обновлен:
             Toast.makeText(this, R.string.contact_updated, Toast.LENGTH_SHORT).show();
-            Intent intent = ContactPagerActivity.newIntent(this, contact.getId(), query);
-            startActivity(intent);
+
+            Intent data = new Intent();
+            data.putExtra(KEY_CONTACT_ID, contact.getId());
+            setResult(RESULT_OK, data);
+
+            //Intent intent = ContactPagerActivity.newIntent(this, contact.getId(), query);
+            //startActivity(intent);
             finish();
         }
     }
+
+
 }

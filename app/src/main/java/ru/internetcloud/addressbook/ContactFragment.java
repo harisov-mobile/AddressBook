@@ -87,13 +87,7 @@ public class ContactFragment extends Fragment {
         zip_text_view = view.findViewById(R.id.zip_text_view);
         contact_image_view = view.findViewById(R.id.contact_image_view);
 
-        name_text_view.setText(contact.getName());
-        phone_text_view.setText(contact.getPhone());
-        email_text_view.setText(contact.getEmail());
-        street_text_view.setText(contact.getStreet());
-        city_text_view.setText(contact.getCity());
-        state_text_view.setText(contact.getState());
-        zip_text_view.setText(contact.getZip());
+        updateView();
 
         contact_image_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,5 +179,25 @@ public class ContactFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(contactPhotoFile.getPath(), getActivity());
             contact_image_view.setImageBitmap(bitmap);
         }
+    }
+
+    private void updateView() {
+        name_text_view.setText(contact.getName());
+        phone_text_view.setText(contact.getPhone());
+        email_text_view.setText(contact.getEmail());
+        street_text_view.setText(contact.getStreet());
+        city_text_view.setText(contact.getCity());
+        state_text_view.setText(contact.getState());
+        zip_text_view.setText(contact.getZip());
+
+    }
+
+    public void updateFragment() {
+        // вызывается из ContactViewPager
+        contact = ContactLab.getInstance(getActivity()).getContact(contact.getId()); // обновляю контакт из БД
+        contactPhotoFile = ContactLab.getInstance(getActivity()).getPhotoFile(contact);
+
+        updateView();
+        updatePhotoView();
     }
 }
