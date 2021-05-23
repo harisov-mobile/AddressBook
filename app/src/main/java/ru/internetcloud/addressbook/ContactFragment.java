@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -25,6 +26,7 @@ import ru.internetcloud.addressbook.dialog.ConfirmDeleteFragment;
 import ru.internetcloud.addressbook.dialog.IncreasedImageFragment;
 import ru.internetcloud.addressbook.model.Contact;
 import ru.internetcloud.addressbook.model.ContactLab;
+import ru.internetcloud.addressbook.util.EmptySubmitSearchView;
 import ru.internetcloud.addressbook.util.PictureUtils;
 
 public class ContactFragment extends Fragment {
@@ -53,6 +55,8 @@ public class ContactFragment extends Fragment {
     private ImageView contact_image_view;
 
     private File contactPhotoFile;
+    private EmptySubmitSearchView searchView = null;
+    private String query;
 
     public static ContactFragment newInstance(long contactId) {
         ContactFragment contactFragment = new ContactFragment();
@@ -110,12 +114,7 @@ public class ContactFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        if (isTablet) {
-            inflater.inflate(R.menu.fragment_contact_with_search_menu, menu);
-        } else {
-            inflater.inflate(R.menu.fragment_contact_menu, menu);
-        }
+        inflater.inflate(R.menu.fragment_contact_menu, menu);
     }
 
     @Override
@@ -189,7 +188,6 @@ public class ContactFragment extends Fragment {
         city_text_view.setText(contact.getCity());
         state_text_view.setText(contact.getState());
         zip_text_view.setText(contact.getZip());
-
     }
 
     public void updateFragment() {

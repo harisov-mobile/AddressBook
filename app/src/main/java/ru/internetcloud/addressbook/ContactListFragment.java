@@ -33,6 +33,7 @@ public class ContactListFragment extends Fragment {
     public interface Callbacks {
         public void onSelectContact(long contactId, String query);
         public void onAddContact();
+        public void onQueryChanged();
     }
 
     private Callbacks hostActivity;
@@ -54,9 +55,7 @@ public class ContactListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         isTablet = getResources().getBoolean(R.bool.is_tablet);
-        if (!isTablet) {
-            setHasOptionsMenu(true);
-        }
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -92,17 +91,14 @@ public class ContactListFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ContactListFragment.this.query = query;
-
                 // скрыть клавиатуру: 2 способа
                 // статья https://rmirabelle.medium.com/close-hide-the-soft-keyboard-in-android-db1da22b09d2
 //                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
 //                inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-
                 searchView.clearFocus(); // второй способ скрыть клавиатуру
-
                 searchView.onActionViewCollapsed(); // скрывает SearchView
 
-                updateUI();
+                hostActivity.onQueryChanged();
                 return true;
             }
 
@@ -137,10 +133,10 @@ public class ContactListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        updateUI();
+        updateUI(-1, -1);
     }
 
-    public void updateUI() {
+    public void updateUI(long contactId, int position) {
 
         List<Contact> contactList = ContactLab.getInstance(getActivity()).getContactList(query);
 
@@ -162,7 +158,7 @@ public class ContactListFragment extends Fragment {
             contact_list_recycler_view.setHasFixedSize(true);
 
             if (isTablet && contactList.size() > 0) {
-                selectedPosition = 0;
+                selectedPosition = 0; // при создании экрана пусть самая верхняя строчка будет выделена.
                 hostActivity.onSelectContact(contactList.get(selectedPosition).getId(), query);
             }
 
@@ -171,6 +167,31 @@ public class ContactListFragment extends Fragment {
             // поэтому приходится делать:
             contactListAdapter.setContactList(contactList); // при удалении в режиме планшета - без этой строчки - ошибка.
             contactListAdapter.notifyDataSetChanged();
+
+            if (isTablet && contactId > -1) {
+                // установить текущей строкой переданный contactId
+                for (int i = 0; i < contactList.size(); i++) {
+                    if (contactList.get(i).getId() == contactId) {
+                        previousSelectedPosition = selectedPosition;
+                        selectedPosition = i;
+                        if (previousSelectedPosition > -1) {
+                            contactListAdapter.notifyItemChanged(previousSelectedPosition); // убрать выделение с предыдущей строки
+                        }
+                        contactListAdapter.notifyItemChanged(selectedPosition); // установить выделение
+                        break;
+                    }
+                }
+            } else if (isTablet && position > -1) {
+                int size = contactList.size();
+                if (size > 0) {
+                    if (previousSelectedPosition > -1 && size > previousSelectedPosition) {
+                        contactListAdapter.notifyItemChanged(previousSelectedPosition); // убрать выделение с предыдущей строки
+                    }
+                    position = Math.min(size, position);
+                    contactListAdapter.notifyItemChanged(position); // установить выделение
+                    hostActivity.onSelectContact(contactList.get(position).getId(), query);
+                }
+            }
         }
     }
 
@@ -185,6 +206,18 @@ public class ContactListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         hostActivity = null;
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
+    public void setPreviousSelectedPosition(int previousSelectedPosition) {
+        this.previousSelectedPosition = previousSelectedPosition;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     // внутренний класс Holder:

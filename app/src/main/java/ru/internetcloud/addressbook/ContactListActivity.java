@@ -69,6 +69,23 @@ public class ContactListActivity extends TemplateFragmentActivity
     }
 
     @Override
+    public void onQueryChanged() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // уберу текщий фрагмент:
+        ContactFragment contactFragment = (ContactFragment) fragmentManager.findFragmentById(R.id.fragment_detail_container);
+        if (contactFragment != null) {
+            fragmentManager.beginTransaction()
+                    .remove(contactFragment)
+                    .commit();
+        }
+
+        ContactListFragment contactListFragment = (ContactListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+        contactListFragment.setSelectedPosition(0);
+        contactListFragment.setPreviousSelectedPosition(-1);
+        contactListFragment.updateUI(-1, 0);
+    }
+
+    @Override
     public void onEditContact(long contactId) {
         // это планшет:
         ContactAddEditFragment contactAddEditFragment = ContactAddEditFragment.newInstance(contactId);
@@ -86,12 +103,16 @@ public class ContactListActivity extends TemplateFragmentActivity
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
             ContactFragment contactFragment = (ContactFragment) fragmentManager.findFragmentById(R.id.fragment_detail_container);
-            fragmentManager.beginTransaction()
-                    .remove(contactFragment)
-                    .commit();
+            if (contactFragment != null) {
+                fragmentManager.beginTransaction()
+                        .remove(contactFragment)
+                        .commit();
+            }
 
             ContactListFragment contactListFragment = (ContactListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
-            contactListFragment.updateUI();
+            contactListFragment.setSelectedPosition(-1);
+            contactListFragment.setPreviousSelectedPosition(-1);
+            contactListFragment.updateUI(-1, -1);
 
             Toast.makeText(this, R.string.contact_deleted, Toast.LENGTH_SHORT).show();
         }
@@ -112,7 +133,7 @@ public class ContactListActivity extends TemplateFragmentActivity
                     .commit();
 
             ContactListFragment contactListFragment = (ContactListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
-            contactListFragment.updateUI();
+            contactListFragment.updateUI(contactId, -1);
 
             Toast.makeText(this, R.string.contact_added, Toast.LENGTH_SHORT).show();
         }
@@ -133,7 +154,7 @@ public class ContactListActivity extends TemplateFragmentActivity
                     .commit();
 
             ContactListFragment contactListFragment = (ContactListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
-            contactListFragment.updateUI();
+            contactListFragment.updateUI(-1, -1);
 
             Toast.makeText(this, R.string.contact_updated, Toast.LENGTH_SHORT).show();
         }

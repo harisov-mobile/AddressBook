@@ -32,7 +32,6 @@ public class ContactPagerActivity extends AppCompatActivity
     private static final String KEY_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
     private static final String KEY_QUERY = "ru.internetcloud.addressbook.query";
     private ViewPager contact_view_pager;
-    //private List<Contact> contactList;
     private List<Long> contactIdList;
     private int currentPosition;
     private FragmentStatePagerAdapter fragmentStatePagerAdapter;
@@ -67,7 +66,6 @@ public class ContactPagerActivity extends AppCompatActivity
 
         contact_view_pager = findViewById(R.id.contact_view_pager);
 
-        //contactList = ContactLab.getInstance(this).getContactList(query);
         contactIdList = ContactLab.getInstance(this).getContactIdList(query);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -76,15 +74,12 @@ public class ContactPagerActivity extends AppCompatActivity
 
             @Override
             public int getCount() {
-                //return contactList.size();
                 return contactIdList.size();
             }
 
             @NonNull
             @Override
             public Fragment getItem(int position) {
-//                Contact currentContact = contactList.get(position);
-//                return ContactFragment.newInstance(currentContact.getId());
                 return ContactFragment.newInstance(contactIdList.get(position));
             }
 
@@ -109,7 +104,6 @@ public class ContactPagerActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
-                Log.i(TAG, " onPageSelected : currentPosition = " + currentPosition);
             }
 
             @Override
@@ -118,19 +112,9 @@ public class ContactPagerActivity extends AppCompatActivity
             }
         });
 
-//        for (int i = 0; i < contactList.size(); i++) {
-//            if (contactList.get(i).getId() == contactId) {
-//                currentPosition = i;
-//                Log.i(TAG, " currentPosition = " + currentPosition);
-//                //contact_view_pager.setCurrentItem(i);
-//                break;
-//            }
-//        }
         for (int i = 0; i < contactIdList.size(); i++) {
             if (contactIdList.get(i) == contactId) {
                 currentPosition = i;
-                Log.i(TAG, " currentPosition = " + currentPosition);
-                //contact_view_pager.setCurrentItem(i);
                 break;
             }
         }
@@ -141,23 +125,13 @@ public class ContactPagerActivity extends AppCompatActivity
         super.onResume();
 
         // обновляю фрагмент, т.к. возможно, что было редактирование и поля поменялись.
-        Log.i(TAG, " onResume : currentPosition = " + currentPosition);
         contact_view_pager.setCurrentItem(currentPosition);
-
-
-//        ContactFragment contactFragment = ContactFragment.newInstance(currentContact.getId());
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, contactFragment)
-//                .commit();
     }
 
     @Override
     public void onEditContact(long contactId) {
         Intent intent = ContactAddEditActivity.newIntent(this, contactId);
-        //startActivity(intent);
         startActivityForResult(intent, REQUEST_ADD_EDIT);
-        // finish(); // открыть на редактирование существующий контакт, но закрыть саму себя:
     }
 
     @Override
