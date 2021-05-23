@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import ru.internetcloud.addressbook.model.Contact;
+import ru.internetcloud.addressbook.model.ContactLab;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +16,19 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ContactPagerActivity extends AppCompatActivity
     implements ContactFragment.Callbacks {
 
     private static final String KEY_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
+    private static final String KEY_QUERY = "ru.internetcloud.addressbook.query";
     private ViewPager contact_view_pager;
     private List<Contact> contactList;
 
-    public static Intent newIntent(Context context, long contactId) {
+    public static Intent newIntent(Context context, long contactId, String query) {
         Intent intent = new Intent(context, ContactPagerActivity.class);
         intent.putExtra(KEY_CONTACT_ID, contactId);
+        intent.putExtra(KEY_QUERY, query);
         return intent;
     }
 
@@ -40,10 +43,11 @@ public class ContactPagerActivity extends AppCompatActivity
         }
 
         long contactId = getIntent().getLongExtra(KEY_CONTACT_ID, 0);
+        String query = getIntent().getStringExtra(KEY_QUERY);
 
         contact_view_pager = findViewById(R.id.contact_view_pager);
 
-        contactList = ContactLab.getInstance(this).getContactList();
+        contactList = ContactLab.getInstance(this).getContactList(query);
         FragmentManager fragmentManager = getSupportFragmentManager();
         contact_view_pager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
 

@@ -1,10 +1,7 @@
 package ru.internetcloud.addressbook;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -17,15 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import ru.internetcloud.addressbook.dialog.ConfirmDeleteFragment;
+import ru.internetcloud.addressbook.dialog.IncreasedImageFragment;
+import ru.internetcloud.addressbook.model.Contact;
+import ru.internetcloud.addressbook.model.ContactLab;
+import ru.internetcloud.addressbook.util.PictureUtils;
 
 public class ContactFragment extends Fragment {
 
@@ -116,7 +116,12 @@ public class ContactFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.fragment_contact_menu, menu);
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        if (isTablet) {
+            inflater.inflate(R.menu.fragment_contact_with_search_menu, menu);
+        } else {
+            inflater.inflate(R.menu.fragment_contact_menu, menu);
+        }
     }
 
     @Override

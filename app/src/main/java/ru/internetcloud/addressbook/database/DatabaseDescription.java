@@ -1,4 +1,4 @@
-package ru.internetcloud.addressbook;
+package ru.internetcloud.addressbook.database;
 
 public final class DatabaseDescription {
 

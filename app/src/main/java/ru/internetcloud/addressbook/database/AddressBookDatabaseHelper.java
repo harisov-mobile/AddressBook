@@ -1,4 +1,4 @@
-package ru.internetcloud.addressbook;
+package ru.internetcloud.addressbook.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

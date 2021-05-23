@@ -1,8 +1,7 @@
-package ru.internetcloud.addressbook;
+package ru.internetcloud.addressbook.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import java.io.File;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import ru.internetcloud.addressbook.util.PictureUtils;
+import ru.internetcloud.addressbook.R;
 
 public class IncreasedImageFragment extends DialogFragment {
 

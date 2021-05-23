@@ -1,4 +1,4 @@
-package ru.internetcloud.addressbook;
+package ru.internetcloud.addressbook.model;
 
 //**************************************
 // синглтон
@@ -12,6 +12,10 @@ import android.database.sqlite.SQLiteDatabase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.internetcloud.addressbook.database.ContactCursorWrapper;
+import ru.internetcloud.addressbook.database.AddressBookDatabaseHelper;
+import ru.internetcloud.addressbook.database.DatabaseDescription;
 
 public class ContactLab {
 
@@ -52,10 +56,16 @@ public class ContactLab {
         sqLiteDatabase = new AddressBookDatabaseHelper(appContext).getWritableDatabase();
     }
 
-    public List<Contact> getContactList() {
+    public List<Contact> getContactList(String query) {
         List<Contact> contactList = new ArrayList<>();
 
-        ContactCursorWrapper contactCursorWrapper = queryContacts(null, null); // получаем все записи
+        ContactCursorWrapper contactCursorWrapper;
+        if (query == null || query.equals("")) {
+            contactCursorWrapper = queryContacts(null, null); // получаем все записи
+        } else {
+            String queryWithPercent = '%' + query + '%';
+            contactCursorWrapper = queryContacts(DatabaseDescription.ContactTable.Cols.NAME + " LIKE ?", new String[] {queryWithPercent}); // получаем все записи
+        }
 
         try {
             contactCursorWrapper.moveToFirst();

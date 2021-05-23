@@ -14,30 +14,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import ru.internetcloud.addressbook.dialog.ConfirmSaveFragment;
+import ru.internetcloud.addressbook.dialog.IncreasedImageFragment;
+import ru.internetcloud.addressbook.model.Contact;
+import ru.internetcloud.addressbook.model.ContactLab;
+import ru.internetcloud.addressbook.util.FileLab;
+import ru.internetcloud.addressbook.util.PictureUtils;
 
 // смотри https://github.com/stfalcon-studio/ContentManager
 import com.stfalcon.contentmanager.ContentManager;
-
-import static java.nio.file.Files.*;
 
 public class ContactAddEditFragment extends Fragment implements ContentManager.PickContentListener {
 

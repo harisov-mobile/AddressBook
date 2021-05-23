@@ -2,17 +2,19 @@ package ru.internetcloud.addressbook;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import ru.internetcloud.addressbook.model.Contact;
+import ru.internetcloud.addressbook.model.ContactLab;
 
 public class ContactAddEditActivity extends TemplateFragmentActivity
     implements ContactAddEditFragment.Callbacks {
 
     private static final String KEY_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
+
+    private String query;
 
     public static Intent newIntent(Context context, long contactId) {
         Intent intent = new Intent(context, ContactAddEditActivity.class);
@@ -30,10 +32,6 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        if (!isTablet) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 
     @Override
@@ -45,7 +43,7 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         } else {
             // контакт успешно добавлен:
             Toast.makeText(this, R.string.contact_added, Toast.LENGTH_SHORT).show();
-            Intent intent = ContactPagerActivity.newIntent(this, contactId);
+            Intent intent = ContactPagerActivity.newIntent(this, contactId, query);
             startActivity(intent);
             finish();
         }
@@ -60,7 +58,7 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
         } else {
             // контакт успешно обновлен:
             Toast.makeText(this, R.string.contact_updated, Toast.LENGTH_SHORT).show();
-            Intent intent = ContactPagerActivity.newIntent(this, contact.getId());
+            Intent intent = ContactPagerActivity.newIntent(this, contact.getId(), query);
             startActivity(intent);
             finish();
         }

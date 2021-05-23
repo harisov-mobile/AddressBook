@@ -43,4 +43,6 @@
     <string name="button_remove_photo">Remove photo</string>
     <string name="add_edit_icon_description">Photo of person</string>
 
+    <string name="search">Search</string>
+
 </resources>

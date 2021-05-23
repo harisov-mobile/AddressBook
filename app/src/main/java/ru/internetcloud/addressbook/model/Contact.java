@@ -1,4 +1,4 @@
-package ru.internetcloud.addressbook;
+package ru.internetcloud.addressbook.model;
 
 import java.util.UUID;
 

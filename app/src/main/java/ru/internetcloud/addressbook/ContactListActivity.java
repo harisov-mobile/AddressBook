@@ -1,13 +1,14 @@
 package ru.internetcloud.addressbook;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import ru.internetcloud.addressbook.model.Contact;
+import ru.internetcloud.addressbook.model.ContactLab;
 
 public class ContactListActivity extends TemplateFragmentActivity
     implements ContactListFragment.Callbacks, ContactFragment.Callbacks, ContactAddEditFragment.Callbacks {
@@ -26,21 +27,17 @@ public class ContactListActivity extends TemplateFragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        if (!isTablet) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 
     @Override
-    public void onSelectContact(long contactId) {
+    public void onSelectContact(long contactId, String query) {
 
         View view = findViewById(R.id.fragment_detail_container);
 
         if (view == null) {
             // это телефон:
             // открыть на просмотр существующий контакт:
-            Intent intent = ContactPagerActivity.newIntent(this, contactId);
+            Intent intent = ContactPagerActivity.newIntent(this, contactId, query);
             startActivity(intent);
         } else {
             // это планшет:
