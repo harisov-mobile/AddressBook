@@ -143,4 +143,15 @@ public class ContactLab {
         }
         return tempFile;
     }
+
+    public List<Long> getContactIdList(String query) {
+        List<Long> result = new ArrayList<>();
+
+        List<Contact> contactList = getContactList(query);
+        for (Contact contact: contactList) {
+            result.add(contact.getId());
+        }
+
+        return result;
+    }
 }

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactPagerActivity extends AppCompatActivity
@@ -31,7 +32,8 @@ public class ContactPagerActivity extends AppCompatActivity
     private static final String KEY_CONTACT_ID = "ru.internetcloud.addressbook.contact_id";
     private static final String KEY_QUERY = "ru.internetcloud.addressbook.query";
     private ViewPager contact_view_pager;
-    private List<Contact> contactList;
+    //private List<Contact> contactList;
+    private List<Long> contactIdList;
     private int currentPosition;
     private FragmentStatePagerAdapter fragmentStatePagerAdapter;
 
@@ -65,25 +67,30 @@ public class ContactPagerActivity extends AppCompatActivity
 
         contact_view_pager = findViewById(R.id.contact_view_pager);
 
-        contactList = ContactLab.getInstance(this).getContactList(query);
+        //contactList = ContactLab.getInstance(this).getContactList(query);
+        contactIdList = ContactLab.getInstance(this).getContactIdList(query);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentStatePagerAdapter = new FragmentStatePagerAdapter(fragmentManager) {
 
             @Override
             public int getCount() {
-                return contactList.size();
+                //return contactList.size();
+                return contactIdList.size();
             }
 
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                Contact currentContact = contactList.get(position);
-                return ContactFragment.newInstance(currentContact.getId());
+//                Contact currentContact = contactList.get(position);
+//                return ContactFragment.newInstance(currentContact.getId());
+                return ContactFragment.newInstance(contactIdList.get(position));
             }
 
             @Override
             public int getItemPosition(@NonNull Object object) {
+                // этот метод срабатывает только тогда, когда у адаптера вызван метод notifyDataSetChanged
                 if (object instanceof ContactFragment) {
                     ((ContactFragment)object).updateFragment();
                 }
@@ -111,8 +118,16 @@ public class ContactPagerActivity extends AppCompatActivity
             }
         });
 
-        for (int i = 0; i < contactList.size(); i++) {
-            if (contactList.get(i).getId() == contactId) {
+//        for (int i = 0; i < contactList.size(); i++) {
+//            if (contactList.get(i).getId() == contactId) {
+//                currentPosition = i;
+//                Log.i(TAG, " currentPosition = " + currentPosition);
+//                //contact_view_pager.setCurrentItem(i);
+//                break;
+//            }
+//        }
+        for (int i = 0; i < contactIdList.size(); i++) {
+            if (contactIdList.get(i) == contactId) {
                 currentPosition = i;
                 Log.i(TAG, " currentPosition = " + currentPosition);
                 //contact_view_pager.setCurrentItem(i);
@@ -166,27 +181,30 @@ public class ContactPagerActivity extends AppCompatActivity
         }
 
         if (requestCode == REQUEST_ADD_EDIT) {
-            if (data == null) {
-                return;
-            } else {
-                // обновить из базы данных contactList.get(currentPosition)
-                long contactId = ContactAddEditActivity.getContactId(data); // декодирование результата (чтобы не знать и не хранить где-то наименование ключа
-                if (contactId > 0) {
-                    Contact contact = ContactLab.getInstance(this).getContact(contactId); // считаю свежую информацию о контакте из базы данных.
-                    if (contact != null) {
-                        for (int i = 0; i < contactList.size(); i++) {
-                            if (contactList.get(i).getId() == contactId) {
-                                currentPosition = i;
-                                contactList.set(i, contact); // обновлю контакт в списке контактов.
-                                fragmentStatePagerAdapter.notifyDataSetChanged();
-                                //Log.i(TAG, " currentPosition = " + currentPosition);
-                                //contact_view_pager.setCurrentItem(i);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            fragmentStatePagerAdapter.notifyDataSetChanged();
+
+            // этот код оставил как пример декодирование результата
+//            if (data == null) {
+//                return;
+//            } else {
+//                // обновить из базы данных contactList.get(currentPosition)
+//                long contactId = ContactAddEditActivity.getContactId(data); // декодирование результата (чтобы не знать и не хранить где-то наименование ключа
+//                if (contactId > 0) {
+//                    Contact contact = ContactLab.getInstance(this).getContact(contactId); // считаю свежую информацию о контакте из базы данных.
+//                    if (contact != null) {
+//                        for (int i = 0; i < contactList.size(); i++) {
+//                            if (contactList.get(i).getId() == contactId) {
+//                                currentPosition = i;
+//                                contactList.set(i, contact); // обновлю контакт в списке контактов.
+//                                fragmentStatePagerAdapter.notifyDataSetChanged();
+//                                //Log.i(TAG, " currentPosition = " + currentPosition);
+//                                //contact_view_pager.setCurrentItem(i);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
 
     }
