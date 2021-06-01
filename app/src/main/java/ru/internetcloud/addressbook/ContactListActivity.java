@@ -72,10 +72,10 @@ public class ContactListActivity extends TemplateFragmentActivity
     public void onQueryChanged() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         // уберу текщий фрагмент:
-        ContactFragment contactFragment = (ContactFragment) fragmentManager.findFragmentById(R.id.fragment_detail_container);
-        if (contactFragment != null) {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_detail_container);
+        if (fragment != null) {
             fragmentManager.beginTransaction()
-                    .remove(contactFragment)
+                    .remove(fragment)
                     .commit();
         }
 
@@ -102,10 +102,10 @@ public class ContactListActivity extends TemplateFragmentActivity
             Toast.makeText(this, R.string.contact_not_deleted, Toast.LENGTH_SHORT).show();
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            ContactFragment contactFragment = (ContactFragment) fragmentManager.findFragmentById(R.id.fragment_detail_container);
-            if (contactFragment != null) {
+            Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_detail_container);
+            if (fragment != null) {
                 fragmentManager.beginTransaction()
-                        .remove(contactFragment)
+                        .remove(fragment)
                         .commit();
             }
 

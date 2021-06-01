@@ -64,7 +64,7 @@ public class ContactAddEditActivity extends TemplateFragmentActivity
             Toast.makeText(this, R.string.contact_updated, Toast.LENGTH_SHORT).show();
 
             Intent data = new Intent();
-            data.putExtra(KEY_CONTACT_ID, contact.getId());
+            data.putExtra(KEY_CONTACT_ID, contact.getId()); // не понадобился, достаточно RESULT_OK и REQUEST_ADD_EDIT
             setResult(RESULT_OK, data);
 
             //Intent intent = ContactPagerActivity.newIntent(this, contact.getId(), query);

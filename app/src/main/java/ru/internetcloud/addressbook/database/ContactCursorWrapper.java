@@ -2,8 +2,6 @@ package ru.internetcloud.addressbook.database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-
-import ru.internetcloud.addressbook.database.DatabaseDescription;
 import ru.internetcloud.addressbook.model.Contact;
 
 public class ContactCursorWrapper extends CursorWrapper {

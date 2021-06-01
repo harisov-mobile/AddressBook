@@ -105,7 +105,7 @@ public class ContactAddEditFragment extends Fragment implements ContentManager.P
             try {
                 FileLab.copy(contactPhotoFile, tempPhotoFile);
             } catch (Exception ex) {
-                String msg = "Photo was not loaded from  due to an error : " + ex.getMessage();
+                String msg = getResources().getString(R.string.error_photo_not_loaded) + ex.getMessage();
                 Log.i(TAG, msg);
             }
         }

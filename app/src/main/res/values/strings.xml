@@ -45,4 +45,6 @@
 
     <string name="search">Search</string>
 
+    <string name="error_photo_not_loaded">Photo was not loaded from  due to an error :</string>
+
 </resources>
